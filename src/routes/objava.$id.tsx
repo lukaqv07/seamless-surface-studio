@@ -3,6 +3,7 @@ import { useSuspenseQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { postQuery, formatDate } from "@/lib/blog";
+import { useAuth, fallbackName, useHydrated } from "@/lib/auth";
 
 export const Route = createFileRoute("/objava/$id")({
   loader: ({ context, params }) => context.queryClient.ensureQueryData(postQuery(params.id)),
@@ -21,7 +22,9 @@ function PostPage() {
   const { id } = Route.useParams();
   const { data } = useSuspenseQuery(postQuery(id));
   const qc = useQueryClient();
-  const [author, setAuthor] = useState("");
+  const { user, profile } = useAuth();
+  const hydrated = useHydrated();
+  const [typedName, setTypedName] = useState<string | null>(null);
   const [content, setContent] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
@@ -29,12 +32,19 @@ function PostPage() {
   if (!data.post) return <p>Objava nije pronađena. <Link to="/" className="text-primary">Natrag</Link></p>;
   const post = data.post;
 
+  const signedInName = profile?.display_name ?? fallbackName(user?.email);
+  const name = user ? signedInName : (typedName ?? profile?.display_name ?? "");
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (author.trim().length < 2 || !content.trim()) return setErr("Upiši ime (min. 2 znaka) i komentar.");
+    const who = name.trim();
+    if (who.length < 2 || !content.trim())
+      return setErr(user ? "Napiši komentar." : "Upiši ime (min. 2 znaka) i komentar.");
     setBusy(true);
     setErr("");
-    const { error } = await supabase.from("comments").insert({ post_id: id, author: author.trim(), content: content.trim() });
+    const { error } = await supabase
+      .from("comments")
+      .insert({ post_id: id, author: who, content: content.trim() });
     setBusy(false);
     if (error) return setErr("Spremanje nije uspjelo.");
     setContent("");
@@ -59,7 +69,19 @@ function PostPage() {
           ))}
         </ul>
         <form onSubmit={submit} className="mt-6 space-y-3">
-          <input className="field" placeholder="Tvoje ime" value={author} maxLength={60} onChange={(e) => setAuthor(e.target.value)} />
+          {hydrated && user ? (
+            <p className="text-sm text-muted-foreground">
+              Komentiraš kao <strong className="text-foreground">{signedInName}</strong>.
+            </p>
+          ) : (
+            <input
+              className="field"
+              placeholder="Tvoje ime"
+              value={name}
+              maxLength={60}
+              onChange={(e) => setTypedName(e.target.value)}
+            />
+          )}
           <textarea className="field min-h-24" placeholder="Napiši komentar…" value={content} maxLength={2000} onChange={(e) => setContent(e.target.value)} />
           {err && <p className="text-sm text-destructive">{err}</p>}
           <button className="btn-primary" disabled={busy}>{busy ? "Šaljem…" : "Komentiraj"}</button>

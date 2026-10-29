@@ -11,6 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as NovaRouteImport } from './routes/nova'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as AuthIndexRouteImport } from './routes/auth/index'
+import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 import { Route as ObjavaIdRouteImport } from './routes/objava.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -23,6 +26,21 @@ const NovaRoute = NovaRouteImport.update({
   path: '/nova',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthIndexRoute = AuthIndexRouteImport.update({
+  id: '/auth/',
+  path: '/auth/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/auth/callback',
+  path: '/auth/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ObjavaIdRoute = ObjavaIdRouteImport.update({
   id: '/objava/$id',
   path: '/objava/$id',
@@ -32,31 +50,62 @@ const ObjavaIdRoute = ObjavaIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/nova': typeof NovaRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/objava/$id': typeof ObjavaIdRoute
+  '/auth/': typeof AuthIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/nova': typeof NovaRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/objava/$id': typeof ObjavaIdRoute
+  '/auth': typeof AuthIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/nova': typeof NovaRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/objava/$id': typeof ObjavaIdRoute
+  '/auth/': typeof AuthIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/nova' | '/objava/$id'
+  fullPaths:
+    | '/'
+    | '/nova'
+    | '/reset-password'
+    | '/auth/callback'
+    | '/objava/$id'
+    | '/auth/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/nova' | '/objava/$id'
-  id: '__root__' | '/' | '/nova' | '/objava/$id'
+  to:
+    | '/'
+    | '/nova'
+    | '/reset-password'
+    | '/auth/callback'
+    | '/objava/$id'
+    | '/auth'
+  id:
+    | '__root__'
+    | '/'
+    | '/nova'
+    | '/reset-password'
+    | '/auth/callback'
+    | '/objava/$id'
+    | '/auth/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   NovaRoute: typeof NovaRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  AuthCallbackRoute: typeof AuthCallbackRoute
   ObjavaIdRoute: typeof ObjavaIdRoute
+  AuthIndexRoute: typeof AuthIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -75,6 +124,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NovaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/': {
+      id: '/auth/'
+      path: '/auth'
+      fullPath: '/auth/'
+      preLoaderRoute: typeof AuthIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/auth/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/objava/$id': {
       id: '/objava/$id'
       path: '/objava/$id'
@@ -88,7 +158,10 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   NovaRoute: NovaRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  AuthCallbackRoute: AuthCallbackRoute,
   ObjavaIdRoute: ObjavaIdRoute,
+  AuthIndexRoute: AuthIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
