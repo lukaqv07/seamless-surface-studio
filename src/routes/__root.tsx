@@ -114,15 +114,60 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function AuthChip() {
+  const nav = useNavigate();
+  const queryClient = useQueryClient();
+  const { user, profile, pending } = useAuth();
+
+  if (pending) return <span className="h-9 w-24" aria-hidden />;
+  if (!user)
+    return (
+      <Link to="/auth" className="btn-secondary">
+        Prijava
+      </Link>
+    );
+
+  const signOut = async () => {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    nav({ to: "/auth", replace: true });
+  };
+
+  return (
+    <div className="flex items-center gap-3">
+      <span className="hidden text-sm text-muted-foreground sm:inline">
+        {profile?.display_name ?? "Račun"}
+      </span>
+      <button className="btn-secondary" onClick={signOut}>
+        Odjava
+      </button>
+    </div>
+  );
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    const { data } = supabase.auth.onAuthStateChange((event) => {
+      if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
+      router.invalidate();
+      if (event !== "SIGNED_OUT") queryClient.invalidateQueries();
+    });
+    return () => data.subscription.unsubscribe();
+  }, [queryClient, router]);
 
   return (
     <QueryClientProvider client={queryClient}>
       <div className="mx-auto max-w-3xl px-5">
-        <header className="flex items-center justify-between py-6">
+        <header className="flex items-center justify-between gap-4 py-6">
           <Link to="/" className="font-serif text-2xl font-bold">Bilježnica</Link>
-          <Link to="/nova" className="btn-primary">Piši</Link>
+          <div className="flex items-center gap-3">
+            <Link to="/nova" className="btn-primary">Piši</Link>
+            <AuthChip />
+          </div>
         </header>
         <main className="py-8">
           <Outlet />
