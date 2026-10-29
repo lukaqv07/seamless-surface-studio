@@ -3,7 +3,7 @@ import { useSuspenseQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { postQuery, formatDate } from "@/lib/blog";
-import { useAuth } from "@/lib/auth";
+import { useAuth, fallbackName } from "@/lib/auth";
 
 export const Route = createFileRoute("/objava/$id")({
   loader: ({ context, params }) => context.queryClient.ensureQueryData(postQuery(params.id)),
