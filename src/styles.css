@@ -72,4 +72,13 @@
   .btn-primary {
     @apply inline-flex items-center rounded-md bg-primary px-5 py-2 font-semibold text-primary-foreground transition hover:opacity-90 disabled:opacity-50;
   }
+  .btn-secondary {
+    @apply inline-flex items-center rounded-md border border-input bg-card px-5 py-2 font-semibold text-foreground transition hover:bg-accent disabled:opacity-50;
+  }
+  .tab-on {
+    @apply rounded-md bg-primary px-4 py-2 font-semibold text-primary-foreground;
+  }
+  .tab-off {
+    @apply rounded-md px-4 py-2 font-semibold text-muted-foreground transition hover:bg-accent hover:text-foreground;
+  }
 }
