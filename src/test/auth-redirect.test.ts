@@ -21,7 +21,7 @@ describe("sign-in helpers", () => {
   });
 
   it("falls back to a neutral name when there is no e-mail to read", () => {
-    expect(fallbackName("")).toBe("Netko");
-    expect(fallbackName("@biljeznica.app")).toBe("Netko");
+    expect(fallbackName("")).toBe("Čitatelj");
+    expect(fallbackName("@biljeznica.app")).toBe("Čitatelj");
   });
 });
