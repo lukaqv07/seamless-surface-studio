@@ -45,8 +45,7 @@ function NewPost() {
     );
   }
 
-  const displayName =
-    profile?.display_name ?? (user.email ? user.email.split("@")[0] : "Čitatelj");
+  const displayName = profile?.display_name ?? fallbackName(user.email);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();

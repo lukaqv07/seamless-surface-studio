@@ -41,6 +41,12 @@ export function targetPath(redirect: unknown): "/nova" | "/" {
   return redirect === "/nova" ? "/nova" : "/";
 }
 
+/** Name to show when the profile row is missing. */
+export function fallbackName(email: string | null | undefined): string {
+  const local = email?.split("@")[0];
+  return local && local.length > 0 ? local : "Čitatelj";
+}
+
 export function authErrorMessage(message: string | undefined): string {
   const m = message ?? "";
   if (/invalid login credentials/i.test(m)) return "E-mail ili lozinka nisu ispravni.";

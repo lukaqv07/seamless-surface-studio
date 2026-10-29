@@ -17,9 +17,10 @@ export const Route = createFileRoute("/auth/")({
       { property: "og:description", content: "Prijavi se ili napravi račun na blogu Bilježnica." },
     ],
   }),
-  validateSearch: (raw: Record<string, unknown>): AuthSearch => ({
-    redirect: typeof raw.redirect === "string" ? raw.redirect : undefined,
-  }),
+  validateSearch: (raw: Record<string, unknown>): AuthSearch => {
+    const redirect = typeof raw["redirect"] === "string" ? raw["redirect"] : undefined;
+    return redirect ? { redirect } : {};
+  },
   component: AuthPage,
 });
 

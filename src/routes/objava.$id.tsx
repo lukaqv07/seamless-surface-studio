@@ -31,8 +31,7 @@ function PostPage() {
   if (!data.post) return <p>Objava nije pronađena. <Link to="/" className="text-primary">Natrag</Link></p>;
   const post = data.post;
 
-  const signedInName =
-    profile?.display_name ?? (user?.email ? user.email.split("@")[0] : "");
+  const signedInName = profile?.display_name ?? fallbackName(user?.email);
   const name = user ? signedInName : (typedName ?? profile?.display_name ?? "");
 
   const submit = async (e: React.FormEvent) => {
