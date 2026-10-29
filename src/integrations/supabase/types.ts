@@ -49,6 +49,7 @@ export type Database = {
       posts: {
         Row: {
           author: string
+          author_id: string | null
           content: string
           created_at: string
           id: string
@@ -56,6 +57,7 @@ export type Database = {
         }
         Insert: {
           author: string
+          author_id?: string | null
           content: string
           created_at?: string
           id?: string
@@ -63,10 +65,37 @@ export type Database = {
         }
         Update: {
           author?: string
+          author_id?: string | null
           content?: string
           created_at?: string
           id?: string
           title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "posts_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name: string
+          id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string
+          id?: string
         }
         Relationships: []
       }
