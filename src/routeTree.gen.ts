@@ -10,33 +10,53 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as NovaRouteImport } from './routes/nova'
+import { Route as ObjavaIdRouteImport } from './routes/objava.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NovaRoute = NovaRouteImport.update({
+  id: '/nova',
+  path: '/nova',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ObjavaIdRoute = ObjavaIdRouteImport.update({
+  id: '/objava/$id',
+  path: '/objava/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/nova': typeof NovaRoute
+  '/objava/$id': typeof ObjavaIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/nova': typeof NovaRoute
+  '/objava/$id': typeof ObjavaIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/nova': typeof NovaRoute
+  '/objava/$id': typeof ObjavaIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/nova' | '/objava/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/nova' | '/objava/$id'
+  id: '__root__' | '/' | '/nova' | '/objava/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  NovaRoute: typeof NovaRoute
+  ObjavaIdRoute: typeof ObjavaIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +68,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/nova': {
+      id: '/nova'
+      path: '/nova'
+      fullPath: '/nova'
+      preLoaderRoute: typeof NovaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/objava/$id': {
+      id: '/objava/$id'
+      path: '/objava/$id'
+      fullPath: '/objava/$id'
+      preLoaderRoute: typeof ObjavaIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  NovaRoute: NovaRoute,
+  ObjavaIdRoute: ObjavaIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
