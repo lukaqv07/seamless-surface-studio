@@ -3,7 +3,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import "@lovable.dev/cloud-auth-js/styles.css";
-import { authErrorMessage, sessionQuery, targetPath } from "@/lib/auth";
+import { authErrorMessage, sessionQuery, targetPath, useHydrated } from "@/lib/auth";
 import { useQuery } from "@tanstack/react-query";
 
 type AuthSearch = { redirect?: string };
@@ -30,6 +30,7 @@ function AuthPage() {
   const nav = useNavigate();
   const search = Route.useSearch();
   const { data: user } = useQuery(sessionQuery);
+  const hydrated = useHydrated();
   const target = targetPath(search.redirect);
 
   const [mode, setMode] = useState<"signin" | "signup" | "forgot">("signin");
@@ -103,7 +104,7 @@ function AuthPage() {
     goTo();
   };
 
-  if (user) {
+  if (hydrated && user) {
     return (
       <div className="mx-auto max-w-md rounded-md border border-border bg-card p-8 text-center">
         <h1 className="text-3xl font-bold">Prijava nije potrebna</h1>

@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth, fallbackName } from "@/lib/auth";
+import { useAuth, fallbackName, useHydrated } from "@/lib/auth";
 
 export const Route = createFileRoute("/nova")({
   head: () => ({
@@ -20,11 +20,12 @@ function NewPost() {
   const nav = useNavigate();
   const qc = useQueryClient();
   const { user, profile, pending } = useAuth();
+  const hydrated = useHydrated();
   const [f, setF] = useState({ title: "", content: "" });
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
 
-  if (pending) return <p className="text-muted-foreground">Trenutak…</p>;
+  if (!hydrated || pending) return <p className="text-muted-foreground">Trenutak…</p>;
 
   if (!user) {
     return (

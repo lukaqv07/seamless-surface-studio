@@ -3,7 +3,7 @@ import { useSuspenseQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { postQuery, formatDate } from "@/lib/blog";
-import { useAuth, fallbackName } from "@/lib/auth";
+import { useAuth, fallbackName, useHydrated } from "@/lib/auth";
 
 export const Route = createFileRoute("/objava/$id")({
   loader: ({ context, params }) => context.queryClient.ensureQueryData(postQuery(params.id)),
@@ -23,6 +23,7 @@ function PostPage() {
   const { data } = useSuspenseQuery(postQuery(id));
   const qc = useQueryClient();
   const { user, profile } = useAuth();
+  const hydrated = useHydrated();
   const [typedName, setTypedName] = useState<string | null>(null);
   const [content, setContent] = useState("");
   const [busy, setBusy] = useState(false);
@@ -68,7 +69,7 @@ function PostPage() {
           ))}
         </ul>
         <form onSubmit={submit} className="mt-6 space-y-3">
-          {user ? (
+          {hydrated && user ? (
             <p className="text-sm text-muted-foreground">
               Komentiraš kao <strong className="text-foreground">{signedInName}</strong>.
             </p>

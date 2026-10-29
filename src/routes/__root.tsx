@@ -11,7 +11,7 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/lib/auth";
+import { useAuth, useHydrated } from "@/lib/auth";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -118,8 +118,9 @@ function AuthChip() {
   const nav = useNavigate();
   const queryClient = useQueryClient();
   const { user, profile, pending } = useAuth();
+  const hydrated = useHydrated();
 
-  if (pending) return <span className="h-9 w-24" aria-hidden />;
+  if (!hydrated || pending) return <span className="h-9 w-24" aria-hidden />;
   if (!user)
     return (
       <Link to="/auth" className="btn-secondary">

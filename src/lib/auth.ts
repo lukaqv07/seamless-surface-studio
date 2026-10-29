@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useQuery, queryOptions } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -39,6 +40,15 @@ export function useAuth() {
 /** Where to land after signing in. Only "/nova" is honoured, everything else goes home. */
 export function targetPath(redirect: unknown): "/nova" | "/" {
   return redirect === "/nova" ? "/nova" : "/";
+}
+
+/** True once the page has hydrated — the sign-in session only exists in the browser. */
+export function useHydrated() {
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+  return hydrated;
 }
 
 /** Name to show when the profile row is missing. */
