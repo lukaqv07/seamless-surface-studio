@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { postQuery, formatDate } from "@/lib/blog";
 
 export const Route = createFileRoute("/objava/$id")({
+  loader: ({ context, params }) => context.queryClient.ensureQueryData(postQuery(params.id)),
   head: ({ loaderData }) => ({
     meta: [
       { title: loaderData?.post ? `${loaderData.post.title} — Bilježnica` : "Objava — Bilježnica" },
@@ -13,7 +14,6 @@ export const Route = createFileRoute("/objava/$id")({
       { property: "og:description", content: loaderData?.post?.content.slice(0, 150) ?? "Objava na blogu." },
     ],
   }),
-  loader: ({ context, params }) => context.queryClient.ensureQueryData(postQuery(params.id)),
   component: PostPage,
 });
 
